@@ -6,11 +6,11 @@ import mysql.connector
 load_dotenv()
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "aldb.lmmsys.cl"),
-    "port": int(os.getenv("DB_PORT", "5434")),
-    "user": os.getenv("DB_USER", "aaron.cancino"),
+    "host": os.getenv("DB_HOST", "host.67"),
+    "port": int(os.getenv("DB_PORT", "3333")),
+    "user": os.getenv("DB_USER", "67777"),
     "password": os.getenv("DB_PASSWORD", ""),
-    "database": os.getenv("DB_NAME", "aaron_cancino_test"),
+    "database": os.getenv("DB_NAME", "tutablawe"),
 }
 
 def get_connection():

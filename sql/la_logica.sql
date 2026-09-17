@@ -1,4 +1,3 @@
-USE servicio_tecnico_db;
 DROP VIEW IF EXISTS vw_ordenes_resumen;
 CREATE VIEW vw_ordenes_resumen AS
 SELECT o.id_orden,c.nombre cliente,e.tipo tipo_equipo,e.marca,e.modelo,e.numero_serie,

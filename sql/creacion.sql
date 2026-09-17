@@ -1,8 +1,3 @@
--- IMPORTANTE: este script reconstruye la BD desde cero. NO ejecutarlo sobre tu BD actual si quieres conservar sus datos.
-DROP DATABASE IF EXISTS aaron_cancino_test;
-CREATE DATABASE aaron_cancino_test CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE aaron_cancino_test;
-
 CREATE TABLE clientes_ser (
  id_cliente INT NOT NULL AUTO_INCREMENT,
  nombre VARCHAR(80) NOT NULL,

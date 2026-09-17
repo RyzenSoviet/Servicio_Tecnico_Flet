@@ -1,4 +1,3 @@
-USE servicio_tecnico_db;
 INSERT INTO clientes_ser (nombre,telefono,email,direccion,fecha_registro) VALUES
 ('Camila Rojas','912345678','camila.rojas@gmail.com','Av. Central 120','2026-09-07 12:08:11'),
 ('Diego Muñoz','923456781','diego.munoz@example.com','Pasaje Norte 45','2026-09-07 12:08:11'),

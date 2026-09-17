@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Servicio Técnico | Estado de reparación</title>
+  <style>
+    :root{--bg:#080a0d;--surface:#11151a;--surface2:#171c22;--border:#29313b;--text:#f3f5f7;--muted:#96a0ad;--accent:#f0b24b;--ok:#79c98d}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+    header{border-bottom:1px solid var(--border);background:#0c0f13}.nav{max-width:1100px;margin:auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between}.brand small{color:var(--accent);font-weight:800;letter-spacing:1.6px}.brand strong{display:block;font-size:20px;margin-top:4px}.tag{color:var(--muted);font-size:13px}
+    main{max-width:1100px;margin:auto;padding:70px 24px}.hero{max-width:760px;margin-bottom:34px}.hero h1{font-size:clamp(36px,6vw,64px);line-height:1.02;margin:0 0 18px}.hero h1 span{color:var(--accent)}.hero p{color:var(--muted);font-size:18px;line-height:1.6;margin:0}
+    .grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:0 18px 50px #0004}.card h2{margin:0 0 7px;font-size:19px}.sub{color:var(--muted);font-size:14px;margin:0 0 24px;line-height:1.5}
+    label{display:block;color:var(--muted);font-size:13px;margin:15px 0 7px}input{width:100%;padding:14px 15px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text);outline:none;font-size:15px}input:focus{border-color:var(--accent)}button{width:100%;margin-top:20px;border:0;border-radius:9px;padding:14px;background:var(--accent);color:#171006;font-weight:800;font-size:15px;cursor:pointer}button:hover{filter:brightness(1.06)}
+    .msg{padding:13px 15px;border:1px solid #6b4c2c;background:#2a2015;border-radius:9px;color:#ffd89b;margin-bottom:18px}.empty{min-height:270px;display:grid;place-items:center;text-align:center;color:var(--muted)}.empty .icon{font-size:42px;margin-bottom:12px}.status{display:inline-block;padding:7px 11px;border-radius:999px;background:#213126;color:var(--ok);font-size:12px;font-weight:800;margin-bottom:18px}.device{font-size:25px;font-weight:800;margin-bottom:5px}.serial{color:var(--muted);font-size:13px;margin-bottom:24px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden}.fact{background:var(--surface2);padding:15px}.fact small{display:block;color:var(--muted);margin-bottom:6px}.fact strong{font-size:14px}.wide{grid-column:1/-1}.note{margin-top:20px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;line-height:1.55}
+    footer{max-width:1100px;margin:0 auto;padding:25px 24px 45px;color:#68717c;font-size:12px}@media(max-width:760px){main{padding-top:42px}.grid{grid-template-columns:1fr}.tag{display:none}.facts{grid-template-columns:1fr}.wide{grid-column:auto}}
+  </style>
+</head>
+<body>
+<header><div class="nav"><div class="brand"><strong>Servicio Técnico</strong></div></div></header>
+<main>
+  <section class="hero"><h1>Revisa el estado de tu <span>equipo.</span></h1><p>Consulta el avance de tu servicio técnico usando el correo registrado y el número de serie. La información se obtiene directamente de la misma base de datos del sistema.</p></section>
+  <section class="grid">
+    <div class="card"><h2>Consultar reparación</h2><p class="sub">Tus datos se usan solamente para localizar el equipo registrado.</p>
+      {% if mensaje %}<div class="msg">{{ mensaje }}</div>{% endif %}
+      <form method="post"><label for="email">Correo del cliente</label><input id="email" name="email" type="email" required placeholder="nombre@correo.cl" value="{{ request.form.get('email','') }}"><label for="serie">Número de serie</label><input id="serie" name="serie" required placeholder="Ej: SN-LEN-1001" value="{{ request.form.get('serie','') }}"><button type="submit">Consultar estado</button></form>
+    </div>
+    <div class="card">
+      {% if resultado %}
+        <span class="status">{{ resultado.estado_orden or resultado.estado_equipo }}</span><div class="device">{{ resultado.tipo }} · {{ resultado.marca }} {{ resultado.modelo }}</div><div class="serial">N° serie: {{ resultado.numero_serie }} · Cliente: {{ resultado.cliente }}</div>
+        <div class="facts"><div class="fact"><small>Estado del equipo</small><strong>{{ resultado.estado_equipo }}</strong></div><div class="fact"><small>Orden de servicio</small><strong>{% if resultado.id_orden %}#{{ resultado.id_orden }}{% else %}Sin orden asociada{% endif %}</strong></div><div class="fact"><small>Técnico</small><strong>{{ resultado.tecnico }}</strong></div><div class="fact"><small>Recepción</small><strong>{{ resultado.fecha_recepcion or 'Pendiente' }}</strong></div><div class="fact wide"><small>Falla registrada</small><strong>{{ resultado.descripcion_falla or 'Sin descripción disponible' }}</strong></div><div class="fact wide"><small>Diagnóstico</small><strong>{{ resultado.diagnostico or 'Diagnóstico pendiente' }}</strong></div>{% if resultado.id_orden %}<div class="fact"><small>Mano de obra</small><strong>${{ '{:,.0f}'.format(resultado.costo_mano_obra or 0).replace(',', '.') }}</strong></div><div class="fact"><small>Repuestos</small><strong>${{ '{:,.0f}'.format(resultado.total_repuestos or 0).replace(',', '.') }}</strong></div>{% endif %}</div>
+        <div class="note"></div>
+      {% else %}<div class="empty"><div><div class="icon">⌕</div><strong>Tu seguimiento aparecerá aquí</strong><p>Ingresa los datos del equipo para consultar su estado.</p></div></div>{% endif %}
+    </div>
+  </section>
+</main><footer></footer>
+</body></html>
